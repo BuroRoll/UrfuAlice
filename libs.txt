@@ -1,0 +1,5 @@
+flask
+peewee
+python-dateutil
+requests
+beautifulsoup4
