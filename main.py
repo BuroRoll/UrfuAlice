@@ -8,10 +8,11 @@ from strings import *
 
 app = Flask(name)
 schedules_commands = ['скажи расписание', 'сегодняшнее расписание']
-schedules_commands_tomorrow = ['скажи расписание на завтра', 'завтрашнее расписание']
+schedules_commands_tomorrow = ['скажи расписание на завтра', 'завтрашнее расписание', 'расписание на завтра']
+brs_commands = ['какие у меня баллы', 'сколько у меня баллов', 'что у меня в брс', 'брс']
 
 
-@app.route('/post', methods=['POST'])
+@app.route('/Alice', methods=['POST'])
 def main():
     response = {
         'session': request.json['session'],
@@ -27,7 +28,6 @@ def main():
 def handle_dialog(res, req):
     command = req['request']['command']
     user_id = req['session']['user']['user_id']
-
     if command == 'авторизация':
         authorization_answer(res)
     elif command.startswith('login'):
@@ -45,10 +45,14 @@ def handle_dialog(res, req):
     elif command == 'спасибо':
         res['response']['text'] = have_a_good_day
         res['response']['end_session'] = True
-    elif command == 'брс':
-        brs_answer()
+    elif command in brs_commands:
+        brs_answer(res, user_id)
     else:
-        res['response']['text'] = info
+        if check_user(user_id):
+            res['response']['text'] = info
+        else:
+            inf = info + ', но для начала необходимо авторизоваться, чтобы узнать, как это сделать скажи "авторизация"'
+            res['response']['text'] = inf
 
 
 def authorization_answer(res):
@@ -77,8 +81,9 @@ def brs_answer(res, user_id):
     if brs is not None:
         str = 'Твои баллы: \n'
         for name in brs:
-            r = f'{name} {brs[name]}, \n'
-            str = str + r
+            if float(brs[name]) > 0:
+                r = f'{name} {brs[name]}, \n'
+                str = str + r
         res['response']['text'] = str
     else:
         res['response']['text'] = 'В БРС пусто'
