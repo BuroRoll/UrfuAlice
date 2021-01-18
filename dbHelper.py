@@ -27,6 +27,7 @@ def get_user(name):
     password = Data.select().where(Data.name == name).get().password
     return login, password
 
+
 def check_user(name):
     if Data.select().where(Data.name == name):
         return True

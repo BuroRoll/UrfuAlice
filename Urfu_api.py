@@ -18,7 +18,6 @@ def get_current_schedule(cookies, time):
     schedule = requests.post('https://istudent.urfu.ru/itribe/schedule_its/?access-token=',
                              data={'schedule_its[start_date]': time},
                              cookies=cookies)
-    print(schedule.text)
     result = welcome_from_dict(json.loads(schedule.text))
     data = []
     for days in result.schedule.values():
@@ -26,7 +25,6 @@ def get_current_schedule(cookies, time):
             for i in days.events.values():
                 data.append(i.discipline)
         break
-    print(data)
     return data
 
 
