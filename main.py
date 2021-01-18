@@ -60,21 +60,29 @@ def schedule_answer(res, user_id, data):
     cookies = authorization(login, password)
     schedule = get_current_schedule(cookies, data)
     if time.time() - data > 0:
-        answer = 'Сегодня у тебя'
+        answer = 'Сегодня у тебя '
     else:
-        answer = 'Завтра у тебя'
+        answer = 'Завтра у тебя '
     if len(schedule) == 0:
         answer = answer + ' нет пар'
     else:
         answer = answer + ', '.join(schedule)
     res['response']['text'] = answer
 
+
 def brs_answer(res, user_id):
     login, password = get_user(user_id)
     cookies = authorization(login, password)
     brs = get_current_brs(cookies)
-
+    if brs is not None:
+        str = 'Твои баллы: \n'
+        for name in brs:
+            r = f'{name} {brs[name]}, \n'
+            str = str + r
+        res['response']['text'] = str
+    else:
+        res['response']['text'] = 'В БРС пусто'
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3001)
+    app.run(host='0.0.0.0')

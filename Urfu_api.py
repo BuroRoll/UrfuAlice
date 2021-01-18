@@ -15,8 +15,6 @@ def authorization(login, password):
 
 
 def get_current_schedule(cookies, time):
-    today_time = 1607299201
-
     schedule = requests.post('https://istudent.urfu.ru/itribe/schedule_its/?access-token=',
                              data={'schedule_its[start_date]': time},
                              cookies=cookies)
